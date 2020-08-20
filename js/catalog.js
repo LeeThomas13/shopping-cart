@@ -2,6 +2,8 @@
 
 'use strict';
 
+let productsArray = Product.allProducts;
+
 // Set up an empty cart for use on this page.
 var cart = new Cart([]);
 
@@ -9,15 +11,13 @@ var cart = new Cart([]);
 // (the things in the Product.allProducts array) into the drop down list.
 
 function populateForm() {
-
-  //TODO: Add an <option> tag inside the form's select for each product
   var selectElement = document.getElementById('items');
-  for (let i = 0; i < Product.allProducts.length; i++) {
-    console.log(Product.allProducts[i]);
+  for (let i = 0; i < productsArray.length; i++) {
+    console.log(productsArray[i]);
     let optionElement = document.createElement('option');
-    optionElement.setAttribute('value', Product.allProducts[i]);
+    optionElement.setAttribute('value', productsArray[i].name);
+    optionElement.textContent = productsArray[i].name;
     selectElement.appendChild(optionElement);
-// add the option tag for each product
   }
 
 }
@@ -27,10 +27,10 @@ function populateForm() {
 // so that it shows the # of items in the cart and a quick preview of the cart itself.
 function handleSubmit(event) {
 
-  // TODO: Prevent the page from reloading
-
+  event.preventDefault();
+  console.log(event.target.option);
   // Do all the things ...
-  addSelectedItemToCart();
+  addSelectedItemToCart(event);
   cart.saveToLocalStorage();
   updateCounter();
   updateCartPreview();
@@ -38,8 +38,13 @@ function handleSubmit(event) {
 }
 
 // TODO: Add the selected item and quantity to the cart
-function addSelectedItemToCart() {
-  // TODO: suss out the item picked from the select list
+function addSelectedItemToCart(event) {
+  for (let i = 0; i < productsArray.length; i++) {
+    if (productsArray[i] === event.target.option.value)
+    cart.push(new CartItem(productsArray[i], event.target.quantity.value));
+    cart.addItem(productsArray[i], event.target.quantity.value);
+    console.log(cart);
+  }
   // TODO: get the quantity
   // TODO: using those, add one item to the Cart
 }
